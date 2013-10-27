@@ -1,8 +1,8 @@
 <?php
 
-namespace Sadekbaroudi\Gitorade\OperationState;
+namespace Sadekbaroudi\OperationState;
 
-use Sadekbaroudi\Gitorade\OperationState\OperationStateException;
+use Sadekbaroudi\OperationState\OperationStateException;
 
 /**
  * This class defines an Operation State. You set actions to execute, and all the
@@ -31,7 +31,7 @@ class OperationState {
      * @param Object $object the object on which you will be executing that action, NULL if a method without a class
      * @param string $method the method that you would like to call
      * @param array $arguments an array of arguments to be passed to the method
-     * @return \Sadekbaroudi\Gitorade\OperationState\OperationState
+     * @return \Sadekbaroudi\OperationState\OperationState
      */
     public function setExecute($object, $method, $arguments = array())
     {
@@ -48,7 +48,7 @@ class OperationState {
      * @param Object $object the object on which you will be executing that action, NULL if a method without a class
      * @param string $method the method that you would like to call
      * @param array $arguments an array of arguments to be passed to the method
-     * @return \Sadekbaroudi\Gitorade\OperationState\OperationState
+     * @return \Sadekbaroudi\OperationState\OperationState
      */
     public function addExecute($object, $method, $arguments = array())
     {
@@ -91,7 +91,7 @@ class OperationState {
      * @param Object $object the object on which you will be executing that action, NULL if a method without a class
      * @param string $method the method that you would like to call
      * @param array $arguments an array of arguments to be passed to the method
-     * @return \Sadekbaroudi\Gitorade\OperationState\OperationState
+     * @return \Sadekbaroudi\OperationState\OperationState
      */
     public function setUndo($object, $method, $arguments = array())
     {
@@ -108,7 +108,7 @@ class OperationState {
      * @param Object $object the object on which you will be executing that action, NULL if a method without a class
      * @param string $method the method that you would like to call
      * @param array $arguments an array of arguments to be passed to the method
-     * @return \Sadekbaroudi\Gitorade\OperationState\OperationState
+     * @return \Sadekbaroudi\OperationState\OperationState
      */
     public function addUndo($object, $method, $arguments = array())
     {

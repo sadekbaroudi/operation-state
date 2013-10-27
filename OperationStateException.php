@@ -1,5 +1,5 @@
 <?php
 
-namespace Sadekbaroudi\Gitorade\OperationState;
+namespace Sadekbaroudi\OperationState;
 
 class OperationStateException extends \Exception{}

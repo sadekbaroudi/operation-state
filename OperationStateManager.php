@@ -1,11 +1,9 @@
 <?php
 
-// TODO: Move this into its own library and include from the Gitorade project!
+namespace Sadekbaroudi\OperationState;
 
-namespace Sadekbaroudi\Gitorade\OperationState;
-
-use Sadekbaroudi\Gitorade\OperationState\OperationState;
-use Sadekbaroudi\Gitorade\OperationState\OperationStateException;
+use Sadekbaroudi\OperationState\OperationState;
+use Sadekbaroudi\OperationState\OperationStateException;
 
 /**
  * This class will manage a list of operation objects in a queue. You can add and remove objects,
