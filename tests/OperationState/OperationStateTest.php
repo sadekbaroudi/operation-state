@@ -240,7 +240,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     public function executeAndUndoProvider()
     {
         return array(
-        	array(new OperationState(), 'getKey', array()),
+            array(new OperationState(), 'getKey', array()),
             array(NULL, 'is_array', array(array())),
             array(NULL, 'md5', array('test'))
         );
