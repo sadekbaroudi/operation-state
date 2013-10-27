@@ -1,7 +1,7 @@
 {
     "name": "sadekbaroudi/operation-state",
     "description": "Handle Operation States for executable actions, with the ability to undo. i.e. transactions and rollbacks for PHP",
-    "version": "0.1.2",
+    "version": "0.1.5",
     "type": "library",
     "keywords": ["transactions", "rollback", "php", "execute", "undo", "operation", "states"],
     "homepage": "https://github.com/sadekbaroudi/operation-state",
