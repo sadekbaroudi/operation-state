@@ -30,6 +30,24 @@ class OperationState {
     protected $undoParameters = array();
     
     /**
+     * Getter for the executeParameters
+     * @return array
+     */
+    public function getExecute()
+    {
+        return $this->executeParameters;
+    }
+    
+    /**
+     * Getter for the undoParameters
+     * @return array
+     */
+    public function getUndo()
+    {
+        return $this->undoParameters;
+    }
+    
+    /**
      * This will clear the current set of execute actions, and add the passed action
      * 
      * @param Object $object the object on which you will be executing that action, NULL if a method without a class
