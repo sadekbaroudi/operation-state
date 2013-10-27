@@ -20,6 +20,5 @@
     "require": {
         "php": ">=5.3.3"
     },
-    "target-dir": "Sadekbaroudi/OperationState",
     "minimum-stability": "dev"
 }
