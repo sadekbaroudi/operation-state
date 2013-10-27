@@ -13,6 +13,10 @@ use Sadekbaroudi\OperationState\OperationStateException;
  */
 class OperationState {
     
+    /**
+     * This is the generated key that persists throughout the existence of this object
+     * @var string
+     */
     protected $key;
     
     /**
