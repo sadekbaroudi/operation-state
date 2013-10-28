@@ -192,7 +192,7 @@ class OperationState {
                 throw new OperationStateException("Method {$params['method']} does not exist on object " . get_class($params['object']));
             }
         
-            return call_user_method_array($params['method'], $params['object'], $params['arguments']);
+            return call_user_func_array(array($params['object'], $params['method']), $params['arguments']);
         
         } else {
             throw new OperationStateException("\$params['object'] is not a valid object");
