@@ -46,7 +46,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     }
     
     /**
-     * @covers Sadekbaroudi\OperationState\OperationState::getExecute
+     * @covers Sadekbaroudi\OperationState\OperationState::testAddExecute
      * @depends testGetExecute
      * @dataProvider executeAndUndoProvider
      */
