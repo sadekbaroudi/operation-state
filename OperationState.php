@@ -175,6 +175,9 @@ class OperationState {
      */
     protected function run($params)
     {
+        // TODO: Change this all to use standard callable format
+        // http://www.php.net/manual/en/language.types.callable.php
+        // Just check if is_callable(), and fail if it's not
         if (is_null($params['object'])) {
         
             if (!function_exists($params['method'])) {

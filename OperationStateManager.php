@@ -36,6 +36,26 @@ class OperationStateManager {
     }
     
     /**
+     * Get the OperationState queue or a single object based on a paseed key
+     * 
+     * @param string $key
+     * @throws OperationStateException
+     * @return array|OperationState returns an array of all OperationState objects or one OperationState
+     */
+    public function get($key = NULL)
+    {
+        if (is_null($key)) {
+            return $this->operationQueue;
+        } else {
+            if (!isset($this->operationQueue[$key])) {
+                throw new OperationStateException("\$key {$key} was not present in the OperationStateManager queue");
+            } else {
+                return $this->operationQueue[$key];
+            }
+        }
+    }
+    
+    /**
      * Remove an object from the execution queue
      * 
      * @param OperationState $operation
@@ -105,7 +125,7 @@ class OperationStateManager {
     public function undoAll()
     {
         if (empty($this->executed)) {
-            return;
+            return FALSE;
         }
         
         $results = array();

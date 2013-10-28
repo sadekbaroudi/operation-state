@@ -163,7 +163,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     
         $results = $mock->getUndo();
         $this->assertNotEmpty($results);
-    
+        
         $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
         $refMethod = $os->getMethod('clearUndo');
         $refMethod->setAccessible(TRUE);
@@ -182,8 +182,8 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     public function testUndo($object, $method, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
-        ->setMethods(array('setUndo', 'run'))
-        ->getMock();
+                     ->setMethods(array('setUndo', 'run'))
+                     ->getMock();
     
         $mock->addUndo($object, $method, $arguments);
     
