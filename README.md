@@ -1,4 +1,4 @@
-operation-state
+operation-state [![Build Status](https://travis-ci.org/sadekbaroudi/operation-state.png?branch=master)](https://travis-ci.org/sadekbaroudi/operation-state) [![Coverage Status](https://coveralls.io/repos/sadekbaroudi/operation-state/badge.png)](https://coveralls.io/r/sadekbaroudi/operation-state)
 ===============
 
 Simple PHP classes to handle Operation States for executable actions, with the
