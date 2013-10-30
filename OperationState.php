@@ -100,7 +100,7 @@ class OperationState {
     {
         $returnValues = array();
         
-        while ($execute = array_pop($this->executeParameters)) {
+        while ($execute = array_shift($this->executeParameters)) {
             $returnValues[] = $this->run($execute);
         }
         
@@ -159,7 +159,7 @@ class OperationState {
     public function undo()
     {
         $returnValues = array();
-        while ($undo = array_pop($this->undoParameters)) {
+        while ($undo = array_shift($this->undoParameters)) {
             $returnValues[] = $this->run($undo);
         }
         

@@ -46,6 +46,45 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     }
     
     /**
+     * @covers Sadekbaroudi\OperationState\OperationState::run
+     * @dataProvider runGoodProvider
+     * @param array $params
+     */
+    public function testGoodRun($params)
+    {
+        $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
+        ->setMethods(array('setExecute'))
+        ->getMock();
+    
+        $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
+        $refMethod = $os->getMethod('run');
+        $refMethod->setAccessible(TRUE);
+        $results = $refMethod->invokeArgs($mock, array($params));
+    
+        $this->assertNotEmpty($results);
+    }
+    
+    /**
+     * @covers Sadekbaroudi\OperationState\OperationState::run
+     * @dataProvider runBadProvider
+     * @expectedException Sadekbaroudi\OperationState\OperationStateException
+     * @param array $params
+     */
+    public function testBadRun($params)
+    {
+        $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
+        ->setMethods(array('setExecute'))
+        ->getMock();
+    
+        $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
+        $refMethod = $os->getMethod('run');
+        $refMethod->setAccessible(TRUE);
+        $results = $refMethod->invokeArgs($mock, array($params));
+    
+        $this->assertNotEmpty($results);
+    }
+    
+    /**
      * @covers Sadekbaroudi\OperationState\OperationState::addExecute
      * @depends testGetExecute
      * @dataProvider executeAndUndoProvider
@@ -93,22 +132,50 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     /**
      * @covers Sadekbaroudi\OperationState\OperationState::execute
      * @depends testAddExecute
-     * @dataProvider executeAndUndoProvider
+     * @depends testGoodRun
+     * @dataProvider testExecuteProvider
      */
-    public function testExecute($object, $method, $arguments)
+    public function testExecute($data, $expected)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
-                     ->setMethods(array('setExecute', 'run'))
+                     ->setMethods(array('setExecute'))
                      ->getMock();
         
-        $mock->addExecute($object, $method, $arguments);
+        foreach ($data as $executeAction) {
+            $mock->addExecute($executeAction['object'], $executeAction['method'], $executeAction['arguments']);
+        }
         
-        $mock->expects($this->once())->method('run')->will($this->returnValue(10));
+        $return = $mock->execute();
         
-        $return = $mock->execute($object, $method, $arguments);
-        
+        $this->assertEquals($expected, $return, "execute call did not return the expected set of data!");
         $this->assertTrue(is_array($return));
         $this->assertNotEmpty($return);
+    }
+    
+    public function testExecuteProvider()
+    {
+        return array(
+        	array(
+        	    array(
+                    array('object' => new \ArrayIterator(array()), 'method' => 'count', 'arguments' => array()),
+            	    array('object' => NULL, 'method' => 'md5', 'arguments' => array('testmd5')),
+        	    ),
+                array(
+        	        0,
+                    md5('testmd5'),
+                ),
+            ),
+            array(
+                array(
+                    array('object' => NULL, 'method' => 'count', 'arguments' => array(array('onevalue'))),
+                    array('object' => NULL, 'method' => 'strtolower', 'arguments' => array('WOAH')),
+                ),
+                array(
+                    1,
+                    'woah'
+                ),
+            ),
+        );
     }
     
     /**
@@ -189,49 +256,10 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     
         $mock->expects($this->once())->method('run')->will($this->returnValue(10));
         
-        $return = $mock->undo($object, $method, $arguments);
+        $return = $mock->undo();
         
         $this->assertTrue(is_array($return));
         $this->assertNotEmpty($return);
-    }
-    
-    /**
-     * @covers Sadekbaroudi\OperationState\OperationState::run
-     * @dataProvider runGoodProvider
-     * @param array $params
-     */
-    public function testGoodRun($params)
-    {
-        $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
-                     ->setMethods(array('setExecute'))
-                     ->getMock();
-        
-        $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
-        $refMethod = $os->getMethod('run');
-        $refMethod->setAccessible(TRUE);
-        $results = $refMethod->invokeArgs($mock, array($params));
-        
-        $this->assertNotEmpty($results);
-    }
-    
-    /**
-     * @covers Sadekbaroudi\OperationState\OperationState::run
-     * @dataProvider runBadProvider
-     * @expectedException Sadekbaroudi\OperationState\OperationStateException
-     * @param array $params
-     */
-    public function testBadRun($params)
-    {
-        $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
-                     ->setMethods(array('setExecute'))
-                     ->getMock();
-        
-        $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
-        $refMethod = $os->getMethod('run');
-        $refMethod->setAccessible(TRUE);
-        $results = $refMethod->invokeArgs($mock, array($params));
-    
-        $this->assertNotEmpty($results);
     }
     
     /**
