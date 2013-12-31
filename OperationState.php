@@ -188,7 +188,7 @@ class OperationState {
             if ($call['arguments'] == self::NO_ARGUMENT) {
                 return call_user_func($call['callable']);
             } else {
-                return call_user_func($call['callable'], $call['arguments']);
+                return call_user_func_array($call['callable'], $call['arguments']);
             }
         } else {
             throw new OperationStateException("\$call and \$arguments passed did not pass is_callable() check");

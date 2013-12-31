@@ -158,7 +158,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
         	array(
         	    array(
                     array(array(new \ArrayIterator(array()), 'count'), OperationState::NO_ARGUMENT),
-            	    array('md5', 'testmd5'),
+            	    array('md5', array('testmd5')),
         	    ),
                 array(
         	        0,
@@ -167,8 +167,8 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
             ),
             array(
                 array(
-                    array('count', array('onevalue')),
-                    array('strtolower', 'WOAH'),
+                    array('count', array(array('onevalue'))),
+                    array('strtolower', array('WOAH')),
                 ),
                 array(
                     1,
@@ -268,10 +268,10 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     public function executeAndUndoProvider()
     {
         return array(
-            array(array(new OperationState(), 'getKey'), array()),
+            array(array(new OperationState(), 'getKey'), array(array())),
             array(array(new OperationState(), 'getKey'), OperationState::NO_ARGUMENT),
-            array('is_array', array()),
-            array('md5', 'test'),
+            array('is_array', array(array())),
+            array('md5', array('test')),
         );
     }
     
