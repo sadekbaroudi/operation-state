@@ -113,11 +113,11 @@ class OperationState {
      * @param array $arguments php is_callable compliant arguments, or OperationState::NO_ARGUMENT if none
      * @return \Sadekbaroudi\OperationState\OperationState
      */
-    public function setUndo($object, $arguments)
+    public function setUndo($callable, $arguments)
     {
         $this->clearUndo();
     
-        $this->addUndo($object, $arguments);
+        $this->addUndo($callable, $arguments);
     
         return $this;
     }
