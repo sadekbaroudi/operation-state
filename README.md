@@ -1,3 +1,6 @@
+operation-state [![Build Status](https://travis-ci.org/sadekbaroudi/operation-state.png?branch=master)](https://travis-ci.org/sadekbaroudi/operation-state) [![Coverage Status](https://coveralls.io/
+repos/sadekbaroudi/operation-state/badge.png)](https://coveralls.io/r/sadekbaroudi/operation-state) [![Dependency Status](https://www.versioneye.com/user/projects/526df623632bac11d5000063/badge.png)
+](https://www.versioneye.com/user/projects/526df623632bac11d5000063)
 operation-state
 ===============
 
