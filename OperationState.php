@@ -13,6 +13,8 @@ use Sadekbaroudi\OperationState\OperationStateException;
  */
 class OperationState {
     
+    const NO_ARGUMENT = 'SorryYouCanNeverUseThisStringAsAnArgument';
+    
     /**
      * This is the generated key that persists throughout the existence of this object
      * @var string
@@ -50,16 +52,15 @@ class OperationState {
     /**
      * This will clear the current set of execute actions, and add the passed action
      * 
-     * @param Object $object the object on which you will be executing that action, NULL if a method without a class
-     * @param string $method the method that you would like to call
-     * @param array $arguments an array of arguments to be passed to the method
+     * @param mixed $callable php is_callable compliant call
+     * @param array $arguments php is_callable compliant arguments, or OperationState::NO_ARGUMENT if none
      * @return \Sadekbaroudi\OperationState\OperationState
      */
-    public function setExecute($object, $method, $arguments = array())
+    public function setExecute($callable, $arguments)
     {
         $this->clearExecute();
     
-        $this->addExecute($object, $method, $arguments);
+        $this->addExecute($callable, $arguments);
     
         return $this;
     }
@@ -67,16 +68,14 @@ class OperationState {
     /**
      * This will add the passed action to the list of execute actions to be called
      * 
-     * @param Object $object the object on which you will be executing that action, NULL if a method without a class
-     * @param string $method the method that you would like to call
-     * @param array $arguments an array of arguments to be passed to the method
+     * @param mixed $callable php is_callable compliant call
+     * @param array $arguments php is_callable compliant arguments, or OperationState::NO_ARGUMENT if none
      * @return \Sadekbaroudi\OperationState\OperationState
      */
-    public function addExecute($object, $method, $arguments = array())
+    public function addExecute($callable, $arguments)
     {
         $this->executeParameters[] = array(
-        	'object' => $object,
-            'method' => $method,
+        	'callable' => $callable,
             'arguments' => $arguments,
         );
         
@@ -110,16 +109,15 @@ class OperationState {
     /**
      * This will clear the current set of undo actions, and add the passed action
      *
-     * @param Object $object the object on which you will be executing that action, NULL if a method without a class
-     * @param string $method the method that you would like to call
-     * @param array $arguments an array of arguments to be passed to the method
+     * @param mixed $callable php is_callable compliant call
+     * @param array $arguments php is_callable compliant arguments, or OperationState::NO_ARGUMENT if none
      * @return \Sadekbaroudi\OperationState\OperationState
      */
-    public function setUndo($object, $method, $arguments = array())
+    public function setUndo($object, $arguments)
     {
         $this->clearUndo();
     
-        $this->addUndo($object, $method, $arguments);
+        $this->addUndo($object, $arguments);
     
         return $this;
     }
@@ -127,16 +125,14 @@ class OperationState {
     /**
      * This will add the passed action to the list of undo actions to be called
      *
-     * @param Object $object the object on which you will be executing that action, NULL if a method without a class
-     * @param string $method the method that you would like to call
-     * @param array $arguments an array of arguments to be passed to the method
+     * @param mixed $callable php is_callable compliant call
+     * @param array $arguments php is_callable compliant arguments, or OperationState::NO_ARGUMENT if none
      * @return \Sadekbaroudi\OperationState\OperationState
      */
-    public function addUndo($object, $method, $arguments = array())
+    public function addUndo($callable, $arguments)
     {
         $this->undoParameters[] = array(
-            'object' => $object,
-            'method' => $method,
+        	'callable' => $callable,
             'arguments' => $arguments,
         );
         
@@ -169,33 +165,33 @@ class OperationState {
     /**
      * This will run the action passed, whether execute or undo.
      * 
-     * @param array $params array in the format array('object' => $object, 'method' => 'methodName', 'arguments' => array());
+     * @param array $call Contains 'callable' index supporting is_callable and 'arguments' (NULL or args).
+     *                    You can also pass OperationState::NO_ARGUMENT as an argument to call with no argument
      * @throws \RuntimeException
      * @return mixed returns the result of the method call
      */
-    protected function run($params)
+    protected function run($call)
     {
-        // TODO: Change this all to use standard callable format
-        // http://www.php.net/manual/en/language.types.callable.php
-        // Just check if is_callable(), and fail if it's not
-        if (is_null($params['object'])) {
+        if (!isset($call['callable'])) {
+            throw new OperationStateException("\$call['callable'] was not set");
+        }
         
-            if (!function_exists($params['method'])) {
-                throw new OperationStateException("Method {$params['method']} does not exist.");
+        if (!isset($call['arguments'])) {
+            try {
+                is_null($call['arguments']);
+            } catch (\Exception $e) {
+                throw new OperationStateException("\$call['arguments'] was not set");
             }
+        }
         
-            return call_user_func_array($params['method'], $params['arguments']);
-        
-        } elseif (is_object($params['object'])) {
-        
-            if (!method_exists($params['object'], $params['method'])) {
-                throw new OperationStateException("Method {$params['method']} does not exist on object " . get_class($params['object']));
+        if (is_callable($call['callable'])) {
+            if ($call['arguments'] == self::NO_ARGUMENT) {
+                return call_user_func($call['callable']);
+            } else {
+                return call_user_func($call['callable'], $call['arguments']);
             }
-        
-            return call_user_func_array(array($params['object'], $params['method']), $params['arguments']);
-        
         } else {
-            throw new OperationStateException("\$params['object'] is not a valid object");
+            throw new OperationStateException("\$call and \$arguments passed did not pass is_callable() check");
         }
     }
     

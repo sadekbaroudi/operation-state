@@ -31,7 +31,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @covers Sadekbaroudi\OperationState\OperationState::setExecute
      * @dataProvider executeAndUndoProvider
      */
-    public function testSetExecute($object, $method, $arguments)
+    public function testSetExecute($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
                      ->setMethods(array('addExecute', 'clearExecute'))
@@ -40,7 +40,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
         $mock->expects($this->once())->method('clearExecute');
         $mock->expects($this->once())->method('addExecute');
     
-        $ret = $mock->setExecute($object, $method, $arguments);
+        $ret = $mock->setExecute($callable, $arguments);
     
         $this->assertEquals(get_class($mock), get_class($ret), "Return value is not a class that matches the mock");
     }
@@ -53,8 +53,8 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     public function testGoodRun($params)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
-        ->setMethods(array('setExecute'))
-        ->getMock();
+                     ->setMethods(array('setExecute'))
+                     ->getMock();
     
         $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
         $refMethod = $os->getMethod('run');
@@ -73,8 +73,8 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     public function testBadRun($params)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
-        ->setMethods(array('setExecute'))
-        ->getMock();
+                     ->setMethods(array('setExecute'))
+                     ->getMock();
     
         $os = new \ReflectionClass('Sadekbaroudi\OperationState\OperationState');
         $refMethod = $os->getMethod('run');
@@ -89,17 +89,17 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @depends testGetExecute
      * @dataProvider executeAndUndoProvider
      */
-    public function testAddExecute($object, $method, $arguments)
+    public function testAddExecute($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
                      ->setMethods(array('setExecute'))
                      ->getMock();
         
-        $ret = $mock->addExecute($object, $method, $arguments);
+        $ret = $mock->addExecute($callable, $arguments);
         
         $this->assertEquals(get_class($mock), get_class($ret), "Return value is not a class that matches the mock");
         
-        $this->assertEquals($mock->getExecute(), array(array('object' => $object, 'method' => $method, 'arguments' => $arguments)));
+        $this->assertEquals($mock->getExecute(), array(array('callable' => $callable, 'arguments' => $arguments)));
     }
     
     /**
@@ -108,13 +108,13 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @depends testGetExecute
      * @dataProvider executeAndUndoProvider
      */
-    public function testClearExecute($object, $method, $arguments)
+    public function testClearExecute($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
                      ->setMethods(array('setExecute'))
                      ->getMock();
         
-        $mock->addExecute($object, $method, $arguments);
+        $mock->addExecute($callable, $arguments);
 
         $results = $mock->getExecute();
         $this->assertNotEmpty($results);
@@ -142,7 +142,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
                      ->getMock();
         
         foreach ($data as $executeAction) {
-            $mock->addExecute($executeAction['object'], $executeAction['method'], $executeAction['arguments']);
+            $mock->addExecute($executeAction[0], $executeAction[1]);
         }
         
         $return = $mock->execute();
@@ -157,8 +157,8 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
         return array(
         	array(
         	    array(
-                    array('object' => new \ArrayIterator(array()), 'method' => 'count', 'arguments' => array()),
-            	    array('object' => NULL, 'method' => 'md5', 'arguments' => array('testmd5')),
+                    array(array(new \ArrayIterator(array()), 'count'), OperationState::NO_ARGUMENT),
+            	    array('md5', 'testmd5'),
         	    ),
                 array(
         	        0,
@@ -167,8 +167,8 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
             ),
             array(
                 array(
-                    array('object' => NULL, 'method' => 'count', 'arguments' => array(array('onevalue'))),
-                    array('object' => NULL, 'method' => 'strtolower', 'arguments' => array('WOAH')),
+                    array('count', array('onevalue')),
+                    array('strtolower', 'WOAH'),
                 ),
                 array(
                     1,
@@ -182,7 +182,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @covers Sadekbaroudi\OperationState\OperationState::setUndo
      * @dataProvider executeAndUndoProvider
      */
-    public function testSetUndo($object, $method, $arguments)
+    public function testSetUndo($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
                      ->setMethods(array('addUndo', 'clearUndo'))
@@ -191,7 +191,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
         $mock->expects($this->once())->method('clearUndo');
         $mock->expects($this->once())->method('addUndo');
     
-        $ret = $mock->setUndo($object, $method, $arguments);
+        $ret = $mock->setUndo($callable, $arguments);
     
         $this->assertEquals(get_class($mock), get_class($ret), "Return value for setUndo is not a class that matches the mock");
     }
@@ -201,17 +201,17 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @depends testGetUndo
      * @dataProvider executeAndUndoProvider
      */
-    public function testAddUndo($object, $method, $arguments)
+    public function testAddUndo($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
                      ->setMethods(array('setUndo'))
                      ->getMock();
     
-        $ret = $mock->addUndo($object, $method, $arguments);
+        $ret = $mock->addUndo($callable, $arguments);
     
         $this->assertEquals(get_class($mock), get_class($ret), "Return value for addUndo is not a class that matches the mock");
     
-        $this->assertEquals($mock->getUndo(), array(array('object' => $object, 'method' => $method, 'arguments' => $arguments)));
+        $this->assertEquals($mock->getUndo(), array(array('callable' => $callable, 'arguments' => $arguments)));
     }
     
     /**
@@ -220,13 +220,13 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @depends testGetUndo
      * @dataProvider executeAndUndoProvider
      */
-    public function testClearUndo($object, $method, $arguments)
+    public function testClearUndo($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
         ->setMethods(array('setUndo'))
         ->getMock();
     
-        $mock->addUndo($object, $method, $arguments);
+        $mock->addUndo($callable, $arguments);
     
         $results = $mock->getUndo();
         $this->assertNotEmpty($results);
@@ -246,13 +246,13 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
      * @depends testAddUndo
      * @dataProvider executeAndUndoProvider
      */
-    public function testUndo($object, $method, $arguments)
+    public function testUndo($callable, $arguments)
     {
         $mock = $this->getMockBuilder('Sadekbaroudi\OperationState\OperationState')
                      ->setMethods(array('setUndo', 'run'))
                      ->getMock();
     
-        $mock->addUndo($object, $method, $arguments);
+        $mock->addUndo($callable, $arguments);
     
         $mock->expects($this->once())->method('run')->will($this->returnValue(10));
         
@@ -268,9 +268,10 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
     public function executeAndUndoProvider()
     {
         return array(
-            array(new OperationState(), 'getKey', array()),
-            array(NULL, 'is_array', array(array())),
-            array(NULL, 'md5', array('test'))
+            array(array(new OperationState(), 'getKey'), array()),
+            array(array(new OperationState(), 'getKey'), OperationState::NO_ARGUMENT),
+            array('is_array', array()),
+            array('md5', 'test'),
         );
     }
     
@@ -280,7 +281,7 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
         
         foreach($this->executeAndUndoProvider() as $dataset)
         {
-            $updatedDataset[] = array(array('object' => $dataset[0], 'method' => $dataset[1], 'arguments' => $dataset[2]));
+            $updatedDataset[] = array(array('callable' => $dataset[0], 'arguments' => $dataset[1]));
         }
         
         return $updatedDataset;
@@ -291,23 +292,29 @@ class OperationStateTest extends \PHPUnit_Framework_TestCase {
         return array(
             array(
             	array(
-            	   'object' => new OperationState(),
-            	   'method' => 'bogusMethod',
+            	   'callable' => array(new OperationState(), 'bogusMethod'),
             	   'arguments' => array(),
                 ),
             ),
             array(
                 array(
-                    'object' => NULL,
-                    'method' => 'bogusMethod',
+                    'callable' => 'bogusMethod',
                     'arguments' => array(),
                 ),
             ),
             array(
                 array(
-                    'object' => 'thisStringShouldBeAnObject',
-                    'method' => 'bogusMethod',
+                    'callable' => array('thisStringShouldBeAnObject', 'bogusMethod'),
                     'arguments' => array(),
+                ),
+            ),
+            array(
+                array(
+                    'callable' => array('thisStringShouldBeAnObject', 'bogusMethod'),
+                ),
+            ),
+            array(
+                array(
                 ),
             ),
         );
